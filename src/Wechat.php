@@ -49,8 +49,6 @@ class Wechat {
         $this->redirect_uri = $config['redirect_uri'];
         $this->access_token = $this->get_access_token();
         
-        require_once 'FileCache/src/FileCache.php';
-        $this->Cache = new FileCache();
 
     }
 
@@ -229,7 +227,7 @@ class Wechat {
      */
     public function return_data($data){
 
-        if ($data['errcode']){
+        if (isset($data['errcode'])){
             $this->error = $data['errmsg'];
             return false;
         }else{
@@ -337,7 +335,9 @@ class Wechat {
      */
     public function cache($key , $value = null , $expire = 3600){
         
-        $cache = $this->Cache;
+
+        require_once 'FileCache/src/FileCache.php';
+        $cache = new FileCache();
         
         if ($value){
             $result = $cache->set($key, $value , $expire);
@@ -351,7 +351,9 @@ class Wechat {
     
     public function cacheClear($key = null){
         
-        $cache = $this->Cache;
+        require_once 'FileCache/src/FileCache.php';
+        $cache = new FileCache();
+        
         if ($key){
             $have = $cache->isHave($key);
             if ($have){
