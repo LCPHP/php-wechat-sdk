@@ -49,9 +49,9 @@ class Wechat {
         $this->redirect_uri = $config['redirect_uri'];
         $this->access_token = $this->get_access_token();
         
-        require_once 'FileCache/src/FileCache.php';
-        $this->Cache = new FileCache();
-
+//         require_once dirname(__FILE__).'/FileCache/src/FileCache.php';
+//         $this->Cache = new FileCache();
+        
     }
 
     /**
@@ -67,7 +67,7 @@ class Wechat {
      */
     private function get_access_token(){
 
-        $data = $this->Cache('access_token_data');
+        $data = $this->cache('access_token_data');
         if ($data){
             //从缓存中取
             $access_token = $data['access_token'];
@@ -85,7 +85,7 @@ class Wechat {
             $data = $this->return_data($data);
             if ($data){
                 $access_token = $data['access_token'];
-                $this->Cache('access_token_data' , $data , $data['expires_in'] - 100);
+                $this->cache('access_token_data' , $data , $data['expires_in'] - 100);
                 return $access_token;
             }else{
                 return false;
@@ -229,7 +229,7 @@ class Wechat {
      */
     public function return_data($data){
 
-        if ($data['errcode']){
+        if (isset($data['errcode'])){
             $this->error = $data['errmsg'];
             return false;
         }else{
@@ -337,7 +337,8 @@ class Wechat {
      */
     public function cache($key , $value = null , $expire = 3600){
         
-        $cache = $this->Cache;
+        require_once dirname(__FILE__).'/FileCache/src/FileCache.php';
+        $cache = new \fileCache();
         
         if ($value){
             $result = $cache->set($key, $value , $expire);
@@ -351,7 +352,9 @@ class Wechat {
     
     public function cacheClear($key = null){
         
-        $cache = $this->Cache;
+        require_once  dirname(__FILE__).'/FileCache/src/FileCache.php';
+        $cache = new \fileCache();
+        
         if ($key){
             $have = $cache->isHave($key);
             if ($have){

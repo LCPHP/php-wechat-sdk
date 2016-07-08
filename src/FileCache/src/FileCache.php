@@ -2,9 +2,9 @@
 /**
  * php 文件缓存类
  */
-namespace niklaslu;
+// namespace niklaslu;
 
-class FileCache{
+class fileCache{
     
     protected $filePath;
     
