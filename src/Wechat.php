@@ -48,10 +48,7 @@ class Wechat {
         $this->appsecret = $config['appsecret'];
         $this->redirect_uri = $config['redirect_uri'];
         $this->access_token = $this->get_access_token();
-        
-//         require_once dirname(__FILE__).'/FileCache/src/FileCache.php';
-//         $this->Cache = new FileCache();
-        
+
     }
 
     /**
@@ -339,6 +336,7 @@ class Wechat {
         
         require_once dirname(__FILE__).'/FileCache/src/FileCache.php';
         $cache = new \fileCache();
+
         
         if ($value){
             $result = $cache->set($key, $value , $expire);
@@ -354,6 +352,7 @@ class Wechat {
         
         require_once  dirname(__FILE__).'/FileCache/src/FileCache.php';
         $cache = new \fileCache();
+
         
         if ($key){
             $have = $cache->isHave($key);
