@@ -14,8 +14,6 @@ class Wechat {
 
     //access_token
     private $access_token = '';
-    
-    private $Cache = null;
 
     //授权回调地址
     private $redirect_uri = '';
@@ -49,9 +47,6 @@ class Wechat {
         $this->redirect_uri = $config['redirect_uri'];
         $this->access_token = $this->get_access_token();
         
-        require_once 'FileCache/src/FileCache.php';
-        $this->Cache = new FileCache();
-
     }
 
     /**
@@ -67,7 +62,8 @@ class Wechat {
      */
     private function get_access_token(){
 
-        $data = $this->Cache('access_token_data');
+        $data = $this->getCacheAccessToken();
+        
         if ($data){
             //从缓存中取
             $access_token = $data['access_token'];
@@ -85,7 +81,7 @@ class Wechat {
             $data = $this->return_data($data);
             if ($data){
                 $access_token = $data['access_token'];
-                $this->Cache('access_token_data' , $data , $data['expires_in'] - 100);
+                $this->setCacheAccessToken($data);
                 return $access_token;
             }else{
                 return false;
@@ -229,7 +225,7 @@ class Wechat {
      */
     public function return_data($data){
 
-        if ($data['errcode']){
+        if (isset($data['errcode'])){
             $this->error = $data['errmsg'];
             return false;
         }else{
@@ -265,7 +261,7 @@ class Wechat {
      * @return mixed|boolean
      */
     public function http_get($url, $data_type='json') {
-
+        
         $cl = curl_init();
         if(stripos($url, 'https://') !== FALSE) {
             curl_setopt($cl, CURLOPT_SSL_VERIFYPEER, FALSE);
@@ -329,37 +325,36 @@ class Wechat {
         }
     }
     
-    /**
-     * 设置缓存
-     * @param unknown $key
-     * @param unknown $value
-     * @param number $expire
-     */
-    public function cache($key , $value = null , $expire = 3600){
+    public function getCacheAccessToken(){
         
-        $cache = $this->Cache;
-        
-        if ($value){
-            $result = $cache->set($key, $value , $expire);
-            return $result;
+        $file = dirname(__FILE__).'/access_token.json';
+        $accessTokenData = file_get_contents($file);
+        if (!$accessTokenData){
+            return false;
         }else{
-            $value = $cache->get($key);
-            return $value;
+            $accessTokenData = $accessTokenData ? json_decode($accessTokenData , true) : '';
+            if ($accessTokenData && isset($accessTokenData['access_token'])){
+                if (isset($accessTokenData['time_out']) && $accessTokenData['time_out'] > time()){
+                    return $accessTokenData;
+                }else{
+                    return false;
+                }
+                
+            }else{
+                return false;
+            }
         }
-        
     }
     
-    public function cacheClear($key = null){
+    public function setCacheAccessToken($data){
         
-        $cache = $this->Cache;
-        if ($key){
-            $have = $cache->isHave($key);
-            if ($have){
-                $cache->delete($key);
-            }
-        }else{
-            $cache->flush();
-        }
+        $file = dirname(__FILE__).'/access_token.json';
+        
+        $data['expires_in'] = $data['expires_in'] - 100;
+        $data['time_out'] = time() + $data['expires_in'];
+        $accessTokenData = json_encode($data , true);
+        
+        file_put_contents($file, $accessTokenData);
     }
 
 }
