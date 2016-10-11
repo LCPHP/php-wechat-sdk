@@ -46,7 +46,7 @@ class Wechat {
         $this->appsecret = $config['appsecret'];
         $this->redirect_uri = $config['redirect_uri'];
         $this->access_token = $this->get_access_token();
-        
+
     }
 
     /**
@@ -326,6 +326,7 @@ class Wechat {
     }
     
     public function getCacheAccessToken(){
+
         
         $file = dirname(__FILE__).'/access_token.json';
         $accessTokenData = file_get_contents($file);

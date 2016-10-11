@@ -1,0 +1,54 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "hash": "d9f6c6996ade386dad1a622ad71f6516",
+    "content-hash": "f4d6a72de1e792b9ad47881aab59a94e",
+    "packages": [
+        {
+            "name": "niklaslu/php-file-cache",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/niklauslu/php-file-cache.git",
+                "reference": "77c87c4ca4bcf5fd4a68fc228582817a7ec67317"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://packagist.phpcomposer.com/files/niklauslu/php-file-cache/77c87c4ca4bcf5fd4a68fc228582817a7ec67317.zip",
+                "reference": "77c87c4ca4bcf5fd4a68fc228582817a7ec67317",
+                "shasum": ""
+            },
+            "type": "composer",
+            "autoload": {
+                "psr-4": {
+                    "niklaslu\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "niklas lu",
+                    "email": "332553882@qq.com"
+                }
+            ],
+            "description": "php file cache",
+            "time": "2016-06-23 09:28:10"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "dev",
+    "stability-flags": {
+        "niklaslu/php-file-cache": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}
