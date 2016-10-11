@@ -9,6 +9,7 @@
             "email": "332553882@qq.com"
         }
     ],
+    "version": "1.0.0",
     "minimum-stability": "dev",
     "require": {},
     "autoload" : {
