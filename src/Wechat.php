@@ -297,7 +297,7 @@ class Wechat {
      */
     public function return_data($data){
 
-        if (isset($data['errcode'])){
+        if (isset($data['errcode']) && $data['errcode'] > 0){
             $this->error = $data['errmsg'];
             return false;
         }else{
