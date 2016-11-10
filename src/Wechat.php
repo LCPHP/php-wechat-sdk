@@ -375,14 +375,14 @@ class Wechat {
         curl_setopt($cl, CURLOPT_POST, true);
         // convert @ prefixed file names to CurlFile class
         // since @ prefix is deprecated as of PHP 5.6
-        if (class_exists('\CURLFile')) {
-            foreach ($fields as $k => $v) {
-                if (strpos($v, '@') === 0) {
-                    $v = ltrim($v, '@');
-                    $fields[$k] = new \CURLFile($v);
-                }
-            }
-        }
+//         if (class_exists('\CURLFile')) {
+//             foreach ($fields as $k => $v) {
+//                 if (strpos($v, '@') === 0) {
+//                     $v = ltrim($v, '@');
+//                     $fields[$k] = new \CURLFile($v);
+//                 }
+//             }
+//         }
         curl_setopt($cl, CURLOPT_POSTFIELDS, $fields);
         $content = curl_exec($cl);
         $status = curl_getinfo($cl);
