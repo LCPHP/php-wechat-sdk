@@ -4,7 +4,7 @@ namespace niklaslu;
 
 class Wechat {
 
-    public $version = '1.0.0';
+    public $version = '1.0.1';
 
     //appID
     private $appid = '';
