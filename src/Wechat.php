@@ -305,6 +305,15 @@ class Wechat {
             return $data;
         }
     }
+    
+    /**
+     * 获取错误
+     * @return string|array
+     */
+    public function get_error(){
+        
+        return $this->error;
+    }
     /**
      * 生成url
      * @param string $url
