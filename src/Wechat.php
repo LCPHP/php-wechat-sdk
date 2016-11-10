@@ -26,7 +26,12 @@ class Wechat {
     const USER_INFO_URI = 'cgi-bin/user/info';
     const USER_LIST_URI = 'cgi-bin/user/get';
     const USER_LIST_INFO_URI = 'cgi-bin/user/info/batchget';
+    
 
+    const MENU_INFO = 'cgi-bin/get_current_selfmenu_info';
+    const MENU_CREATE = 'cgi-bin/menu/create';
+    const TEMPLATE_MESSAGE_SEND = 'cgi-bin/message/template/send';
+    
     const AUTH_URI = 'connect/oauth2/authorize';
     const AUTH_ACCESS_TOKEN_URI = 'sns/oauth2/access_token';
     const AUTH_USER_URI = 'sns/userinfo';
@@ -218,6 +223,73 @@ class Wechat {
 
         return $this->return_data($data);
     }
+    
+    /**
+     * 查询自定义菜单
+     * @return boolean|\Org\Com\unknown
+     */
+    function get_menu_info(){
+    
+        $url = self::API_URI . self::MENU_INFO;
+        $param['access_token'] = $this->access_token;
+        $menu_url = $this->create_url($url, $param);
+    
+        $data = $this->http_get($menu_url);
+    
+        return $this->return_data($data);
+    }
+    
+    /**
+     * 创建自定义菜单
+     * @param unknown $menu
+     * @return boolean|\niklaslu\unknown
+     */
+    function create_menu($menu){
+    
+        $url = self::API_URI . self::MENU_CREATE;
+        $param['access_token'] = $this->access_token;
+        $menu_url = $this->create_url($url, $param);
+    
+        $fields = self::json_encode($menu);
+        $data = $this->http_post($menu_url, $fields);
+        return $this->return_data($data);
+    
+    }
+    
+    /**
+     * 发送模板信息
+     * @param unknown $openid
+     * @param unknown $template_id
+     * @param unknown $template_url
+     * @param unknown $datas
+     * @return boolean|\niklaslu\unknown
+     */
+    public function send_template_msg($openid , $template_id , $template_url , $datas = NULL){
+    
+        $url = self::API_URI . self::TEMPLATE_MESSAGE_SEND;
+        $param['access_token'] = $this->get_access_token();
+    
+        $template_send_url = $this->create_url($url, $param);
+    
+        $fields['touser'] = $openid;
+        $fields['template_id'] = $template_id;
+        $fields['url'] = $template_url;
+        $data = array();
+        foreach ($datas as $k=>$v){
+            $d['value'] = $v;
+            $d['color'] = '#173177';
+    
+            $data[$k] = $d;
+        }
+        if ($data){
+            $fields['data'] = $data;
+        }
+    
+        $fields = json_encode($fields , true);
+        $res = $this->http_post($template_send_url, $fields);
+    
+        return $this->return_data($res);
+    }
     /**
      * 返回data
      * @param array $data
@@ -323,6 +395,55 @@ class Wechat {
         } else {
             return FALSE;
         }
+    }
+    
+    /**
+     * 微信api不支持中文转义的json结构
+     * @param array $arr
+     */
+    static function json_encode($arr) {
+        if (count($arr) == 0) return "[]";
+        $parts = array ();
+        $is_list = false;
+        //Find out if the given array is a numerical array
+        $keys = array_keys ( $arr );
+        $max_length = count ( $arr ) - 1;
+        if (($keys [0] === 0) && ($keys [$max_length] === $max_length )) { //See if the first key is 0 and last key is length - 1
+            $is_list = true;
+            for($i = 0; $i < count ( $keys ); $i ++) { //See if each key correspondes to its position
+                if ($i != $keys [$i]) { //A key fails at position check.
+                    $is_list = false; //It is an associative array.
+                    break;
+                }
+            }
+        }
+        foreach ( $arr as $key => $value ) {
+            if (is_array ( $value )) { //Custom handling for arrays
+                if ($is_list)
+                    $parts [] = self::json_encode ( $value ); /* :RECURSION: */
+                    else
+                        $parts [] = '"' . $key . '":' . self::json_encode ( $value ); /* :RECURSION: */
+            } else {
+                $str = '';
+                if (! $is_list)
+                    $str = '"' . $key . '":';
+                    //Custom handling for multiple data types
+                    if (!is_string ( $value ) && is_numeric ( $value ) && $value<2000000000)
+                        $str .= $value; //Numbers
+                        elseif ($value === false)
+                        $str .= 'false'; //The booleans
+                        elseif ($value === true)
+                        $str .= 'true';
+                        else
+                            $str .= '"' . addslashes ( $value ) . '"'; //All other things
+                            // :TODO: Is there any more datatype we should be in the lookout for? (Object?)
+                            $parts [] = $str;
+            }
+        }
+        $json = implode ( ',', $parts );
+        if ($is_list)
+            return '[' . $json . ']'; //Return numerical JSON
+            return '{' . $json . '}'; //Return associative JSON
     }
     
     public function getCacheAccessToken(){
