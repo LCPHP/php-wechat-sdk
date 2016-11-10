@@ -89,6 +89,7 @@ class Wechat {
                 $this->setCacheAccessToken($data);
                 return $access_token;
             }else{
+                $this->clearCacheAccessToken();
                 return false;
             }
         }
@@ -477,6 +478,12 @@ class Wechat {
         $accessTokenData = json_encode($data , true);
         
         file_put_contents($file, $accessTokenData);
+    }
+    
+    public function clearCacheAccessToken(){
+        
+        $file = dirname(__FILE__).'/access_token.json';
+        file_put_contents($file, '');
     }
 
 }
