@@ -4,7 +4,7 @@ namespace niklaslu;
 
 class Wechat {
 
-    public $version = '1.0.1';
+    public $version = '1.0.2';
 
     //appID
     private $appid = '';
@@ -459,7 +459,7 @@ class Wechat {
     public function getCacheAccessToken(){
 
         
-        $file = dirname(__FILE__).'/access_token.json';
+        $file = dirname(__FILE__).'/../../../../access_token.json';
         $accessTokenData = file_get_contents($file);
         if (!$accessTokenData){
             return false;
@@ -480,7 +480,7 @@ class Wechat {
     
     public function setCacheAccessToken($data){
         
-        $file = dirname(__FILE__).'/access_token.json';
+        $file = dirname(__FILE__).'/../../../../access_token.json';
         
         $data['expires_in'] = $data['expires_in'] - 100;
         $data['time_out'] = time() + $data['expires_in'];
@@ -491,7 +491,7 @@ class Wechat {
     
     public function clearCacheAccessToken(){
         
-        $file = dirname(__FILE__).'/access_token.json';
+        $file = dirname(__FILE__).'/../../../../access_token.json';
         file_put_contents($file, '');
     }
 
